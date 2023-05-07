@@ -71,7 +71,7 @@ input {
 }
 
 #btnSave {
-    background-color: rgb(224, 40, 55);
+    background-color: #f44336;
     color: #fff;
     width: 10rem;
     font-size: 1.5rem;
@@ -84,7 +84,7 @@ input {
 }
 
 #btnSave:hover {
-    background-color: rgb(126, 17, 26);
+    background-color: #a52d24;
     color: #fff;
     cursor: pointer;
 }

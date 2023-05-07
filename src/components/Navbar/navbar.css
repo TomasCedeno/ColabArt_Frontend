@@ -1,0 +1,72 @@
+@import url('https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css');
+@import url('https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css');
+
+header{
+	width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.nav{
+    display: flex;
+    justify-content: end;
+    margin: 0 40px;
+}
+
+.nav ul{
+	list-style: none;
+}
+
+.menu > li{
+	position: relative;
+	display: inline-block;
+}
+
+.btn{
+	display: block;
+    font-size: 2rem;
+	padding: 13px 18px;
+    margin: 0.5rem 1rem;
+    background-color: #9a66fe;
+    border-radius: 50%;
+	color: #000;
+	font-family: 'Open sans';
+	text-decoration: none;
+    cursor: pointer;
+}
+
+.menu li .btn:hover{
+	color: #ffffff;
+	transition: all .3s;
+}
+
+/* Submenu*/
+
+.submenu{
+	position: absolute;
+	background: #fff;
+	width: 120%;
+	visibility: hidden;
+	opacity: 0;
+	transition: opacity 1.5s;
+}
+
+.submenu li .link{
+	display: block;
+	padding: 15px;
+	color: rgb(0, 0, 0);
+    font-size: 1rem;
+	font-family: 'Open sans';
+	text-decoration: none;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.menu li:hover .submenu{
+	visibility: visible;
+	opacity: 1;
+}
+
+.submenu li:hover{
+    background-color: #9a66fe;
+}

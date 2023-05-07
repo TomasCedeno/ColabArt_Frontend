@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Navbar from '../../components/Navbar'
 import './account.css'
 
 import {data} from '../../../provisional_data'
@@ -20,6 +21,8 @@ const Account = () => {
     }
 
     return <div className="account">
+
+        <Navbar />
 
         <h1>Actualiza Tu Cuenta</h1>
 
