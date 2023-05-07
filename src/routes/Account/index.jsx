@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Navbar from '../../components/Navbar'
 import './account.css'
 
-import {data} from '../../../provisional_data'
+import {data} from '../../../provisional_data/data'
 
 
 const Account = () => {
