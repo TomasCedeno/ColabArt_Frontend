@@ -1,0 +1,90 @@
+.account {
+    width: 100%;
+    height: 100vh;
+    background-color: #f9e0ae;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    font-size: 3rem;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #fff;
+    margin-top: 2rem;
+    width: 60%;
+    height: 60vh;
+    min-height: 460px;
+    min-width: 450px;
+    border-radius: 20px;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.3);  
+}
+
+#lblName { grid-area: lblName; }
+#name { grid-area: name; border-color: rgb(231, 33, 172); }
+#lblEmail { grid-area: lblEmail; }
+#email { grid-area: email;border-color: rgb(33, 218, 231); }
+#lblPassword { grid-area: lblPass; }
+#password { grid-area: pass1; border-color: rgb(53, 87, 238);}
+#passwordConfirm { 
+    grid-area: pass2; 
+    border-color: rgb(155, 19, 218); 
+    width: 50%;
+    justify-self: end;
+}
+#btnSave {grid-area: btn;}
+
+form {
+    font-size: 23px;
+    font-weight: 500;
+    color: gray;
+    display: grid;
+    grid-template-areas:
+      'lblName name'
+      'lblEmail email'
+      'lblPass pass1'
+      'pass2 pass2'
+      'btn btn';
+    gap: 1.5rem;
+    padding: 4rem;
+    margin-top: 3rem;
+}
+
+label {
+    font-size: 1em;
+}
+
+input {
+    font-size: 0.8em;
+    border-radius: 12px;
+    width: 100%;
+    height: 3rem;
+    padding: 0.7em;
+    border: solid 2px;
+}
+
+#btnSave {
+    background-color: rgb(224, 40, 55);
+    color: #fff;
+    width: 10rem;
+    font-size: 1.5rem;
+    height: 4rem;
+    margin: 1rem;
+    padding: 20px;
+    justify-self: center;
+    border: none;
+    border-radius: 25px;
+}
+
+#btnSave:hover {
+    background-color: rgb(126, 17, 26);
+    color: #fff;
+    cursor: pointer;
+}
