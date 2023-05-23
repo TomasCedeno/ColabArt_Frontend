@@ -1,7 +1,7 @@
 import './drawing.css'
 
-const Drawing = ({name, img}) => {
-    return <div className='drawing'>
+const Drawing = ({name, img, onClick}) => {
+    return <div className='drawing' onClick={onClick}>
         <img src={img} alt={name} />
         <h3>{name}</h3>
     </div>
