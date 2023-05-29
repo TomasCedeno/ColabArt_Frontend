@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Drawing from "../../components/Drawing";
 import Modal from '../../components/Modal'
@@ -14,6 +14,9 @@ const Home = () => {
     const [drawings, setDrawings] = useState(drawingsList);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showJoinModal, setShowJoinModal] = useState(false);
+    const [drawingName, setDrawingName] = useState('');
+    const [drawingLink, setDrawingLink] = useState('');
+    const navigate = useNavigate();
 
     useEffect(()=>{
         document.body.style.overflow = showCreateModal || showJoinModal ? "hidden" : "auto";
@@ -25,6 +28,14 @@ const Home = () => {
 
     const toggleJoinModal = () => {
         setShowJoinModal(!showJoinModal)
+    }
+
+    const createDrawing = () => {
+        navigate(`/room/${drawingName}`)
+    }
+
+    const joinDrawing = () => {
+        navigate(`/room/${drawingLink}`)
     }
 
     //TODO: crear funcion para redireccionar a dibujos cuando se haga click, crear y unirse a dibujo
@@ -56,14 +67,14 @@ const Home = () => {
 
         <Modal tittle={"Crear Nuevo Dibujo"} show={showCreateModal} toggle={toggleCreateModal}>
             <h4>Ingresa el nombre de tu nuevo dibujo</h4>
-            <input type="text" placeholder="Nuevo Dibujo" />
-            <button className="btn">Crear Dibujo</button>
+            <input type="text" placeholder="Nuevo Dibujo" value={drawingName} onChange={(e)=>setDrawingName(e.target.value)}/>
+            <button className="btn" onClick={createDrawing}>Crear Dibujo</button>
         </Modal>
 
         <Modal tittle={"Unirse a Dibujo"} show={showJoinModal} toggle={toggleJoinModal}>
             <h4>Ingresa el enlace del dibujo</h4>
-            <input type="text" placeholder="Enlace Dibujo" />
-            <button className="btn">Unirse a Dibujo</button>
+            <input type="text" placeholder="Enlace Dibujo" value={drawingLink} onChange={(e)=>setDrawingLink(e.target.value)} />
+            <button className="btn" onClick={joinDrawing}>Unirse a Dibujo</button>
         </Modal>
 
     </div>
