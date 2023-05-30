@@ -1,15 +1,30 @@
-import { useRef } from 'react';
+import { useEffect } from 'react';
 import { useState } from 'react';
 import './canvas.css'
 
-const Canvas = () => {
-    const canvas = useRef();
+const Canvas = ({canvasRef, ctx}) => {
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
     const [mouseDown, setMouseDown] = useState(false);
+    
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        canvas.height = window.innerHeight * 2;
+        canvas.width = window.innerWidth * 2;
+        canvas.style.height = `${window.innerHeight}px`;
+        canvas.style.width = `${window.innerWidth}px`;
+        const context = canvas.getContext("2d");
+
+        context.strokeWidth = 5;
+        context.scale(2, 2)
+        context.lineCap = "round";
+        context.strokeStyle = "#000";
+        context.lineWidth = 5;
+        ctx.current = context;
+    }, [])
 
     const onMouseDown = (e) => {
-        canvas.current.getContext("2d").moveTo(x, y);
+        ctx.current.moveTo(x, y);
         setMouseDown(true);
     };
       
@@ -22,17 +37,17 @@ const Canvas = () => {
         setY(e.clientY)
 
         if (mouseDown) {
-            canvas.current.getContext("2d").lineTo(x, y);
-            canvas.current.getContext("2d").stroke();
+            ctx.current.lineTo(x, y);
+            ctx.current.stroke();
         }
     };
 
-    return <canvas id="canvas"
-        ref={canvas}
+    return <div class="canvas-container"
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
-        onMouseMove={onMouseMove}>      
-        </canvas>
+        onMouseMove={onMouseMove}>
+        <canvas ref={canvasRef} />
+    </div>
 }
 
 export default Canvas;

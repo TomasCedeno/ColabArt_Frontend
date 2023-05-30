@@ -1,6 +1,14 @@
-#canvas {
+.canvas-container {
     background-color: #fff;
     border: solid black;
     width: 85%;
     height: 70vh;
+    overflow: hidden;;
 }
+
+.canvas-container canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
