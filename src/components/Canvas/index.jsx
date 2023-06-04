@@ -9,14 +9,13 @@ const Canvas = ({canvasRef, ctx}) => {
     
     useEffect(() => {
         const canvas = canvasRef.current;
-        canvas.height = window.innerHeight * 2;
-        canvas.width = window.innerWidth * 2;
+        canvas.height = window.innerHeight ;
+        canvas.width = window.innerWidth;
         canvas.style.height = `${window.innerHeight}px`;
         canvas.style.width = `${window.innerWidth}px`;
         const context = canvas.getContext("2d");
 
         context.strokeWidth = 5;
-        context.scale(2, 2)
         context.lineCap = "round";
         context.strokeStyle = "#000";
         context.lineWidth = 5;
@@ -42,7 +41,7 @@ const Canvas = ({canvasRef, ctx}) => {
         }
     };
 
-    return <div class="canvas-container"
+    return <div className="canvas-container"
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
         onMouseMove={onMouseMove}>

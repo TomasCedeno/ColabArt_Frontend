@@ -3,12 +3,12 @@
     border: solid black;
     width: 85%;
     height: 70vh;
-    overflow: hidden;;
+    overflow: hidden;
 }
 
 .canvas-container canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
+    top: -23%;
+    left: -9.5%;
 }
 
