@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from "../../components/Navbar";
 import Canvas from '../../components/Canvas';
@@ -8,6 +8,10 @@ const Room = () => {
     const {roomId} = useParams();
     const canvasRef = useRef(null);
     const ctx = useRef(null);
+    const [color, setColor] = useState("#000000");
+    const [thickness, setThickness] = useState(5);
+    const [tool, setTool] = useState("pencil");
+    const [elements, setElements] = useState([]);
 
     return <div className="room">
         <Navbar />
@@ -16,24 +20,29 @@ const Room = () => {
             <Canvas 
                 canvasRef={canvasRef}
                 ctx={ctx}
+                color={color}
+                thickness={thickness}
+                tool = {tool}
+                elements={elements}
+                setElements={setElements}
             />
             
             <div className="draw-menu">
                 <ul>
                     <li>
-                        <div className='btn color'>
+                        <div className='btn color' style={{background:color=='#000000'?'beige':color}}>
                             <i className="fi fi-rr-palette"></i>
-                            <input type="color" />
+                            <input type="color" value={color} onChange={(e)=>setColor(e.target.value)}/>
                         </div>
                     </li>
 
                     <li>
                         <div className='btn tools'>
                             <i className="fi fi-rs-resources"></i>
-                            <select name="tool" id="tool">
-                                <option value="pencil">Lápiz</option>
-                                <option value="rectangle">Rectángulo</option>
-                                <option value="circle">Círculo</option>
+                            <select name="tool" id="tool" value={tool} onChange={(e)=>setTool(e.target.value)}>
+                                <option key="pencil">Lápiz</option>
+                                <option key="rectangle">Rectángulo</option>
+                                <option key="circle">Círculo</option>
                             </select>
                         </div>
                     </li>
@@ -43,13 +52,15 @@ const Room = () => {
                             <i className="fi fi-rr-line-width"></i>
                         </div>
                         <div className="thickness">
-                            <label htmlFor="thickness">Grosor: {5}</label>
-                            <input type="range" min={1} max={20} name='thickness' />
+                            <label htmlFor="thickness">Grosor: {thickness}</label>
+                            <input type="range" min={1} max={20} name='thickness' value={thickness} onChange={(e)=>setThickness(parseInt(e.target.value))}/>
                         </div>
                     </li>
 
                     <li>
-                        <div className='btn erase'>
+                        <div className='btn erase' 
+                            onClick={(e)=>setTool((tool=='eraser'?'pencil':'eraser'))} 
+                            style={{background:(tool==='eraser'?'#9a66fe':'beige')}}>
                             <i className="fi fi-rs-eraser"></i>
                         </div>
                     </li>

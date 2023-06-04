@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect, useState, useLayoutEffect } from 'react';
+import rough from "roughjs/bundled/rough.esm";
 import './canvas.css'
 
-const Canvas = ({canvasRef, ctx}) => {
-    const [x, setX] = useState(0);
-    const [y, setY] = useState(0);
-    const [mouseDown, setMouseDown] = useState(false);
+const generator = rough.generator();
+
+const Canvas = ({canvasRef, ctx, color, tool, thickness, elements, setElements}) => {
+    const [isDrawing, setIsDrawing] = useState(false);
     
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -17,29 +17,161 @@ const Canvas = ({canvasRef, ctx}) => {
 
         context.strokeWidth = 5;
         context.lineCap = "round";
-        context.strokeStyle = "#000";
-        context.lineWidth = 5;
+        context.strokeStyle = color;
+        context.lineWidth = thickness;
         ctx.current = context;
     }, [])
 
-    const onMouseDown = (e) => {
-        ctx.current.moveTo(x, y);
-        setMouseDown(true);
-    };
-      
-    const onMouseUp = (e) => {
-        setMouseDown(false);
-    };
-      
-    const onMouseMove = (e) => {
-        setX(e.clientX)
-        setY(e.clientY)
+    useEffect(() => {
+        ctx.current.strokeStyle = color;
+    }, [color]);
 
-        if (mouseDown) {
-            ctx.current.lineTo(x, y);
-            ctx.current.stroke();
+    useEffect(() => {
+        ctx.current.lineWidth = thickness;
+    }, [thickness]);
+
+
+    useLayoutEffect(() => {
+        const roughCanvas = rough.canvas(canvasRef.current);
+
+        if (elements.length > 0) {
+            ctx.current.clearRect(
+                0,
+                0,
+                canvasRef.current.width,
+                canvasRef.current.height
+            );
+        }
+
+        elements.forEach((ele, i) => {
+            if (ele.element === "rect") {
+                roughCanvas.draw(
+                    generator.rectangle(ele.offsetX, ele.offsetY, ele.width, ele.height, {
+                        stroke: ele.stroke,
+                        roughness: 0,
+                        strokeWidth: ele.thickness,
+                    })
+                );
+
+            } else if (ele.element === "line") {
+                roughCanvas.draw(
+                    generator.line(ele.offsetX, ele.offsetY, ele.width, ele.height, {
+                        stroke: ele.stroke,
+                        roughness: 0,
+                        strokeWidth: ele.thickness,
+                    })
+                );
+
+            } else if (ele.element === "pencil") {
+                roughCanvas.linearPath(ele.path, {
+                    stroke: ele.stroke,
+                    roughness: 0,
+                    strokeWidth: ele.thickness,
+                });
+
+            } else if (ele.element === "eraser") {
+                roughCanvas.linearPath(ele.path, {
+                    stroke: "#fff",
+                    roughness: 0,
+                    strokeWidth: ele.thickness,
+                });
+            }
+        });
+
+        const canvasImage = canvasRef.current.toDataURL();
+        //socket.emit("drawing", canvasImage);
+    }, [elements]);
+
+
+    const onMouseDown = (e) => {
+        const { offsetX, offsetY } = e.nativeEvent;
+
+        if (tool === "pencil" || tool === "eraser") {
+            setElements((prevElements) => [
+                ...prevElements,
+                {
+                offsetX,
+                offsetY,
+                path: [[offsetX, offsetY]],
+                stroke: color,
+                element: tool,
+                thickness,
+                },
+            ]);
+
+        } else {
+            setElements((prevElements) => [
+                ...prevElements,
+                { offsetX, offsetY, stroke: color, element: tool, thickness },
+            ]);
+        }
+
+        setIsDrawing(true);
+    };
+        
+    const onMouseMove = (e) => {
+        if (!isDrawing) {
+            return;
+        }
+
+        const { offsetX, offsetY } = e.nativeEvent;
+              
+        if (tool === "rect") {
+            setElements((prevElements) =>
+              prevElements.map((ele, index) =>
+                index === elements.length - 1
+                  ? {
+                      offsetX: ele.offsetX,
+                      offsetY: ele.offsetY,
+                      width: offsetX - ele.offsetX,
+                      height: offsetY - ele.offsetY,
+                      stroke: ele.stroke,
+                      element: ele.element,
+                      thickness: ele.thickness,
+                    }
+                  : ele
+              )
+            );
+
+        } else if (tool === "line") {
+            setElements((prevElements) =>
+              prevElements.map((ele, index) =>
+                index === elements.length - 1
+                  ? {
+                      offsetX: ele.offsetX,
+                      offsetY: ele.offsetY,
+                      width: offsetX,
+                      height: offsetY,
+                      stroke: ele.stroke,
+                      element: ele.element,
+                      thickness: ele.thickness,
+                    }
+                  : ele
+              )
+            );
+
+        } else if (tool === "pencil" || tool === "eraser") {
+            setElements((prevElements) =>
+              prevElements.map((ele, index) =>
+                index === elements.length - 1
+                  ? {
+                      offsetX: ele.offsetX,
+                      offsetY: ele.offsetY,
+                      path: [...ele.path, [offsetX, offsetY]],
+                      stroke: ele.stroke,
+                      element: ele.element,
+                      thickness: ele.thickness,
+                    }
+                  : ele
+              )
+            );
         }
     };
+
+    const onMouseUp = (e) => {
+        setIsDrawing(false);
+    };
+
 
     return <div className="canvas-container"
         onMouseDown={onMouseDown}
