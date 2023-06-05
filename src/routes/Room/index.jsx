@@ -40,9 +40,10 @@ const Room = () => {
                         <div className='btn tools'>
                             <i className="fi fi-rs-resources"></i>
                             <select name="tool" id="tool" value={tool} onChange={(e)=>setTool(e.target.value)}>
-                                <option key="pencil">Lápiz</option>
-                                <option key="rectangle">Rectángulo</option>
-                                <option key="circle">Círculo</option>
+                                <option key="pencil" value="pencil">Lápiz</option>
+                                <option key="line" value="line">Línea</option>
+                                <option key="rectangle" value="rectangle">Rectángulo</option>
+                                <option key="circle" value="circle">Círculo</option>
                             </select>
                         </div>
                     </li>
