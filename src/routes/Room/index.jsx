@@ -1,8 +1,13 @@
-import { useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useGlobalContext } from '../../context';
+import axios from 'axios';
+
 import Navbar from "../../components/Navbar";
 import Canvas from '../../components/Canvas';
 import './room.css'
+
+const DRAWINGS_API_URL = 'http://localhost:5000';
 
 const Room = () => {
     const {roomId} = useParams();
@@ -12,6 +17,27 @@ const Room = () => {
     const [thickness, setThickness] = useState(5);
     const [tool, setTool] = useState("pencil");
     const [elements, setElements] = useState([]);
+    const {socket, user} = useGlobalContext();
+    const navigate = useNavigate();
+    const [roomData, setRoomData] = useState({});
+
+    useEffect(() => {
+        const joinRoom = async () => {            
+            return axios.get(DRAWINGS_API_URL+`/rooms/exists/${roomId}`)
+                .then((result)=>{
+                    if (result.data.id == undefined) navigate('/home')
+                    else {
+                        setRoomData(result.data)
+                        socket.emit("user-joined", {roomId, userName:user.name, userId:user.id})
+                    }
+            })  
+        }
+        joinRoom()    
+    }, [])
+
+    const saveData = () => {
+        socket.emit("save", {img: roomData.img, roomId, elements})
+    }
 
     return <div className="room">
         <Navbar />
@@ -25,6 +51,7 @@ const Room = () => {
                 tool = {tool}
                 elements={elements}
                 setElements={setElements}
+                roomData={roomData}
             />
             
             <div className="draw-menu">
@@ -63,6 +90,13 @@ const Room = () => {
                             onClick={(e)=>setTool((tool=='eraser'?'pencil':'eraser'))} 
                             style={{background:(tool==='eraser'?'#9a66fe':'beige')}}>
                             <i className="fi fi-rs-eraser"></i>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div className='btn save'
+                            onClick={saveData}>
+                            <i className="fi fi-rr-disk"></i>
                         </div>
                     </li>
 
