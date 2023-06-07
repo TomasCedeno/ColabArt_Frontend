@@ -1,6 +1,7 @@
 import { useEffect, useState, useLayoutEffect } from 'react';
 import { useGlobalContext } from '../../context';
 import rough from "roughjs/bundled/rough.esm";
+
 import './canvas.css'
 
 const generator = rough.generator();

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import axios from 'axios';
+import {toast, ToastContainer} from 'react-toastify';
 
 import { useGlobalContext } from '../../context';
 import Navbar from '../../components/Navbar'
@@ -16,7 +17,16 @@ const Account = () => {
         await axios.patch(AUTH_URL+`/user/${ user.id }/`, newUser ,{headers: {'Authorization': `Bearer ${user.token_access}`}})
             .then((result) => {
                 setUser({...user, id: result.data.id, name: result.data.name, email: result.data.email})
-                alert('Tus datos se han actualizado con éxito.')
+                toast.success("Tu cuenta se ha actualizado con éxito", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
             })
             .catch((error) => {
                 console.log(error)
@@ -64,6 +74,8 @@ const Account = () => {
                 <button id="btnSave" type="submit">Guardar</button>
             </form>
         </div>
+
+        <ToastContainer />
     </div>
 }
 

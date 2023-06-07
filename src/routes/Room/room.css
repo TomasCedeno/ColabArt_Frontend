@@ -88,6 +88,12 @@
 	opacity: 1;
 }
 
-.draw-menu .save:hover{
+.draw-menu .save:hover, .share:hover{
     background-color: #9a66fe;
+}
+
+#roomName {
+    position: absolute;
+    top: 0;
+    left: 0;
 }

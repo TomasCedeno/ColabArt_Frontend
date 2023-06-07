@@ -2,14 +2,14 @@ import {createContext, useContext, useState} from 'react';
 import axios from 'axios';
 import io from "socket.io-client";
 
-import { AUTH_URL } from './assets/urls';
+import { AUTH_URL, DRAWINGS_URL } from './assets/urls';
 
 const GlobalContext = createContext();
 
 export const useGlobalContext = () => useContext(GlobalContext)
 
 const AppContext = ({children}) => {
-    const server = "http://localhost:5000";
+    const server = DRAWINGS_URL;
     const connectionOptions = {
         "force new connection": true,
         reconnectionAttempts: "Infinity",
@@ -25,8 +25,8 @@ const AppContext = ({children}) => {
         password: '',
         passwordConfirm: '',
         lastName: 'lastName',
-        token_access: '',
-        token_refresh: ''
+        token_access: null,
+        token_refresh: null
     });
 
     const verifyToken = async () => {
@@ -36,11 +36,12 @@ const AppContext = ({children}) => {
             })
             .catch((error)=>{
                 console.log(error);
+                logOut()
             })
     }
 
     const getUserData = async () => {
-        verifyToken()
+        await verifyToken()
     
         await axios.get(AUTH_URL+`/user/${ user.id }/`, {headers: {'Authorization': `Bearer ${user.token_access}`}})
             .then((result) => {
@@ -48,6 +49,7 @@ const AppContext = ({children}) => {
             })
             .catch((error) => {
                 console.log(error)
+                logOut()
             });
     }
 

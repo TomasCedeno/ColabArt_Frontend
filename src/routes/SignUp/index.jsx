@@ -21,24 +21,23 @@ const SignUp = () => {
         logOut()
     }, [])
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        axios.post(
+        await axios.post(
             AUTH_URL+'/user/',
             user,
             {headers:{"Content-Type": "application/json"}}
         )
         .then((result) => {
             setUser({ ...user, token_access: result.data.access, token_refresh: result.data.refresh});
-            console.log(user);
-            const userId = jwt_decode(user.token_access).user_id
+            const userId = jwt_decode(result.data.access).user_id
             setUser({...user, id: userId})
 
             navigate('/home')
         })
         .catch((error) => {
-            console.log(error.response);
+            console.log(error);
 
             if (error.response.status == 400){
                 console.log("Ya hay cuenta con email");

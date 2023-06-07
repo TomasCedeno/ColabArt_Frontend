@@ -32,7 +32,6 @@ const LogIn = () => {
         )
         .then((result) => {
             setUser({ ...user, token_access: result.data.access, token_refresh: result.data.refresh});
-            console.log(user);
             const userId = jwt_decode(user.token_access).user_id
             setUser({...user, id: userId})
 

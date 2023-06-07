@@ -10,8 +10,7 @@ import './home.css'
 
 import newImg from '../../assets/new.png'
 import joinImg from '../../assets/join.png'
-
-const DRAWINGS_API_URL = 'http://localhost:5000';
+import { DRAWINGS_URL } from "../../assets/urls";
 
 const Home = () => {
     const [ownDrawings, setOwnDrawings] = useState([]);
@@ -21,7 +20,7 @@ const Home = () => {
     const [drawingName, setDrawingName] = useState('');
     const [drawingLink, setDrawingLink] = useState('');
     const navigate = useNavigate();
-    const {socket, user, getUserData} = useGlobalContext();
+    const {user, getUserData} = useGlobalContext();
 
     useEffect(()=>{
         document.body.style.overflow = showCreateModal || showJoinModal ? "hidden" : "auto";
@@ -29,18 +28,20 @@ const Home = () => {
 
     useEffect(()=>{
         const fetchOwnDrawings = async () => {            
-            return axios.get(DRAWINGS_API_URL+`/rooms/owner/${user.id}`)
+            return axios.get(DRAWINGS_URL+`/rooms/owner/${user.id}`)
                 .then((result)=>{
                     setOwnDrawings(result.data)
             })  
         }
 
         const fetchSharedDrawings = async () => {            
-            return axios.get(DRAWINGS_API_URL+`/rooms/collaborator/${user.id}`)
+            return axios.get(DRAWINGS_URL+`/rooms/collaborator/${user.id}`)
                 .then((result)=>{
                     setSharedDrawings(result.data)
             })
         }
+
+        if (user.token_access == null || user.token_refresh == null) navigate('/')
 
         getUserData();
         fetchOwnDrawings();
@@ -66,7 +67,7 @@ const Home = () => {
                 img: ""
             }
             
-            return axios.post(DRAWINGS_API_URL+'/rooms', room)
+            return axios.post(DRAWINGS_URL+'/rooms', room)
                 .then((result)=>{
                     navigate(`/room/${result.data.roomId}`)
                 })  
@@ -76,7 +77,7 @@ const Home = () => {
 
     const joinDrawing = () => {
         const joinRoom = async () => {            
-            return axios.get(DRAWINGS_API_URL+`/rooms/exists/${drawingLink}`)
+            return axios.get(DRAWINGS_URL+`/rooms/exists/${drawingLink}`)
                 .then((result)=>{
                     if (result.data.id != undefined) navigate(`/room/${result.data.id}`)
                     else console.log("No existe");

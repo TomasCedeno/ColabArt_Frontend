@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../../context';
 import axios from 'axios';
+import {toast, ToastContainer} from 'react-toastify';
 
 import Navbar from "../../components/Navbar";
 import Canvas from '../../components/Canvas';
 import './room.css'
 
-const DRAWINGS_API_URL = 'http://localhost:5000';
+import { DRAWINGS_URL } from '../../assets/urls';
 
 const Room = () => {
     const {roomId} = useParams();
@@ -17,13 +18,13 @@ const Room = () => {
     const [thickness, setThickness] = useState(5);
     const [tool, setTool] = useState("pencil");
     const [elements, setElements] = useState([]);
-    const {socket, user} = useGlobalContext();
+    const {socket, user, verifyToken} = useGlobalContext();
     const navigate = useNavigate();
     const [roomData, setRoomData] = useState({});
 
     useEffect(() => {
         const joinRoom = async () => {            
-            return axios.get(DRAWINGS_API_URL+`/rooms/exists/${roomId}`)
+            return axios.get(DRAWINGS_URL+`/rooms/exists/${roomId}`)
                 .then((result)=>{
                     if (result.data.id == undefined) navigate('/home')
                     else {
@@ -32,15 +33,48 @@ const Room = () => {
                     }
             })  
         }
+
+        verifyToken()
         joinRoom()    
     }, [])
 
     const saveData = () => {
         socket.emit("save", {img: roomData.img, roomId, elements})
+        toast.success("Dibujo guardado con éxito", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }
+
+    const copyShareLink = () => {
+        navigator.clipboard.writeText(roomId)
+        .then(() => {
+            toast.success("Enlace de dibujo copiado al portapapeles", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        })
+        .catch(err => {
+            console.error('Error al copiar al portapapeles:', err)
+        })
     }
 
     return <div className="room">
         <Navbar />
+
+        <h2 id='roomName'>{roomData.name}</h2>
 
         <div className="draw">
             <Canvas 
@@ -101,13 +135,15 @@ const Room = () => {
                     </li>
 
                     <li>
-                        <div className='btn share'>
+                        <div className='btn share' onClick={copyShareLink}>
                             <i className="fi fi-rs-share"></i>
                         </div>
                     </li>
                 </ul>
             </div>
         </div>
+
+        <ToastContainer />
     </div>
 }
 
