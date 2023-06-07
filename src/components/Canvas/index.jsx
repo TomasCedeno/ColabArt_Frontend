@@ -1,11 +1,14 @@
 import { useEffect, useState, useLayoutEffect } from 'react';
+import { useGlobalContext } from '../../context';
 import rough from "roughjs/bundled/rough.esm";
 import './canvas.css'
 
 const generator = rough.generator();
 
-const Canvas = ({canvasRef, ctx, color, tool, thickness, elements, setElements}) => {
+const Canvas = ({canvasRef, ctx, color, tool, thickness, elements, setElements, roomData}) => {
     const [isDrawing, setIsDrawing] = useState(false);
+    const {socket} = useGlobalContext();
+    const [isFetching, setIsFetching] = useState(false);
     
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -30,6 +33,12 @@ const Canvas = ({canvasRef, ctx, color, tool, thickness, elements, setElements})
         ctx.current.lineWidth = thickness;
     }, [thickness]);
 
+    useEffect(()=>{
+        socket.on('canvasElements', (data) => {
+            setIsFetching(true);
+            setElements(data)
+        })
+    }, [])
 
     useLayoutEffect(() => {
         const roughCanvas = rough.canvas(canvasRef.current);
@@ -44,7 +53,7 @@ const Canvas = ({canvasRef, ctx, color, tool, thickness, elements, setElements})
         }
 
         elements.forEach((ele, i) => {
-            if (ele.element === "rect") {
+            if (ele.element === "rectangle") {
                 roughCanvas.draw(
                     generator.rectangle(ele.offsetX, ele.offsetY, ele.width, ele.height, {
                         stroke: ele.stroke,
@@ -56,6 +65,15 @@ const Canvas = ({canvasRef, ctx, color, tool, thickness, elements, setElements})
             } else if (ele.element === "line") {
                 roughCanvas.draw(
                     generator.line(ele.offsetX, ele.offsetY, ele.width, ele.height, {
+                        stroke: ele.stroke,
+                        roughness: 0,
+                        strokeWidth: ele.thickness,
+                    })
+                );
+
+            } else if (ele.element === "circle") {
+                roughCanvas.draw(
+                    generator.circle(ele.offsetX, ele.offsetY, ele.width+ele.height, {
                         stroke: ele.stroke,
                         roughness: 0,
                         strokeWidth: ele.thickness,
@@ -78,12 +96,13 @@ const Canvas = ({canvasRef, ctx, color, tool, thickness, elements, setElements})
             }
         });
 
-        const canvasImage = canvasRef.current.toDataURL();
-        //socket.emit("drawing", canvasImage);
+        roomData.img = canvasRef.current.toDataURL();
+        if (!isFetching) socket.emit("drawing", {roomId: roomData.id, elements});
     }, [elements]);
 
 
     const onMouseDown = (e) => {
+        setIsFetching(false);
         const { offsetX, offsetY } = e.nativeEvent;
 
         if (tool === "pencil" || tool === "eraser") {
@@ -116,7 +135,7 @@ const Canvas = ({canvasRef, ctx, color, tool, thickness, elements, setElements})
 
         const { offsetX, offsetY } = e.nativeEvent;
               
-        if (tool === "rect") {
+        if (tool === "rectangle" || tool === "circle") {
             setElements((prevElements) =>
               prevElements.map((ele, index) =>
                 index === elements.length - 1

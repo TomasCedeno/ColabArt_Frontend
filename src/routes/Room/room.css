@@ -88,3 +88,6 @@
 	opacity: 1;
 }
 
+.draw-menu .save:hover{
+    background-color: #9a66fe;
+}
