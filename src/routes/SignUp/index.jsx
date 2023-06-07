@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import {toast, ToastContainer} from 'react-toastify';
 
 import { useGlobalContext } from '../../context';
 import './signup.css'
@@ -10,7 +11,7 @@ import bg from '../../assets/signup_bg.jpg'
 import { AUTH_URL } from '../../assets/urls';
 
 const SignUp = () => {
-    const {user, setUser, logOut} = useGlobalContext()
+    const {user, setUser, logOut} = useGlobalContext();
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -26,21 +27,30 @@ const SignUp = () => {
 
         await axios.post(
             AUTH_URL+'/user/',
-            user,
+            {...user, lastName: "lastName"},
             {headers:{"Content-Type": "application/json"}}
         )
         .then((result) => {
-            setUser({ ...user, token_access: result.data.access, token_refresh: result.data.refresh});
             const userId = jwt_decode(result.data.access).user_id
-            setUser({...user, id: userId})
 
+            setUser({ ...user, id: userId, token_access: result.data.access, token_refresh: result.data.refresh});
+            
             navigate('/home')
         })
         .catch((error) => {
             console.log(error);
 
             if (error.response.status == 400){
-                console.log("Ya hay cuenta con email");
+                toast.error("Datos de registro inválidos", {
+                    position: "top-right",
+                    autoClose: 2500,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
         })
     }
@@ -62,6 +72,8 @@ const SignUp = () => {
             </form>
 
         </div>
+
+        <ToastContainer />
     </div>
 }
 

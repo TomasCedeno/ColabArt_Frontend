@@ -41,8 +41,6 @@ const Home = () => {
             })
         }
 
-        if (user.token_access == null || user.token_refresh == null) navigate('/')
-
         getUserData();
         fetchOwnDrawings();
         fetchSharedDrawings();

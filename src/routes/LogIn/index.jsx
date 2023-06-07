@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import {toast, ToastContainer} from 'react-toastify'
 
 import { useGlobalContext } from '../../context';
 import './login.css'
@@ -31,17 +32,23 @@ const LogIn = () => {
             {headers:{"Content-Type": "application/json"}}
         )
         .then((result) => {
-            setUser({ ...user, token_access: result.data.access, token_refresh: result.data.refresh});
-            const userId = jwt_decode(user.token_access).user_id
-            setUser({...user, id: userId})
-
+            const userId = jwt_decode(result.data.access).user_id
+            setUser({ ...user, id: userId, token_access: result.data.access, token_refresh: result.data.refresh});
             navigate('/home')
         })
         .catch((error) => {
             if (error.response.status == 400 || error.response.status == 401){
-                console.log("Credenciales Incorrectas");
+                toast.error("Datos de ingreso incorrectos", {
+                    position: "top-right",
+                    autoClose: 2500,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
-            console.log(error.response);
         })
     }
 
@@ -58,6 +65,8 @@ const LogIn = () => {
             </form>
 
         </div>
+
+        <ToastContainer />
     </div>
 }
 

@@ -49,7 +49,6 @@ const AppContext = ({children}) => {
             })
             .catch((error) => {
                 console.log(error)
-                logOut()
             });
     }
 
