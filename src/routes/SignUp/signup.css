@@ -1,0 +1,60 @@
+
+.signUp {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #a5f9dc;
+    background-repeat: repeat;
+}
+
+.signUp img {
+    position: absolute;
+    width: 60%;
+    top: 8%;
+    right: 34%;
+    z-index: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #fff;
+    margin-top: 2rem;
+    width: 60%;
+    height: 60vh;
+    border-radius: 20px;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.3); 
+    z-index: 1;
+}
+
+.signUp .container {
+    min-height: 460px;
+    min-width: 450px;
+}
+
+.signUp .container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top: 0;
+}
+
+.signUp .container form input {
+    max-width: 1000px;
+}
+
+.signUp .container form #passwordConfirm {
+    width: 100%;
+}
+
+.signUp form button {
+    color: white;
+    width: 250px;
+    border-radius: 50px;
+    border: none;
+    background-color: #9a66fe;
+}

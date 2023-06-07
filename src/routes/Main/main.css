@@ -1,0 +1,45 @@
+.main {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: url('../../assets/main_bg.jpg');
+    background-repeat: repeat;
+    justify-content: space-evenly;
+}
+
+.rectangle {
+    width: 70%;
+    height: 50vh;
+    background-color: #3affa1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: solid black;
+}
+
+.rectangle img {
+    width: 80%;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 5rem;
+}
+
+.buttons .btn {
+    color: white;
+    width: 280px;
+    border-radius: 50px;
+    border: none;
+}
+
+.buttons .signup {
+    background-color: #9a66fe;
+}
+
+.buttons .login {
+    background-color: #2196f3;
+}
