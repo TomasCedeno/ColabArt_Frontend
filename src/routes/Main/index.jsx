@@ -1,10 +1,17 @@
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useGlobalContext } from '../../context'
 import './main.css'
 
 import logo from '../../assets/logo.jpeg'
-import { useNavigate } from 'react-router-dom'
 
 const Main = () => {
+    const {logOut} = useGlobalContext();
     const navigate = useNavigate();
+
+    useEffect(()=>{
+        logOut();
+    }, [])
 
     return <div className="main">
 

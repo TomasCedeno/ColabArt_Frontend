@@ -21,7 +21,7 @@ const Home = () => {
     const [drawingName, setDrawingName] = useState('');
     const [drawingLink, setDrawingLink] = useState('');
     const navigate = useNavigate();
-    const {socket, user} = useGlobalContext();
+    const {socket, user, getUserData} = useGlobalContext();
 
     useEffect(()=>{
         document.body.style.overflow = showCreateModal || showJoinModal ? "hidden" : "auto";
@@ -42,6 +42,7 @@ const Home = () => {
             })
         }
 
+        getUserData();
         fetchOwnDrawings();
         fetchSharedDrawings();
     }, [])

@@ -1,23 +1,44 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import axios from 'axios';
 
+import { useGlobalContext } from '../../context';
 import Navbar from '../../components/Navbar'
 import './account.css'
 
-import {data} from '../../../provisional_data/data'
-
+import { AUTH_URL } from '../../assets/urls';
 
 const Account = () => {
-    const [user, setUser] = useState(data)
+    const {user, setUser, getUserData, verifyToken} = useGlobalContext();
+
+    const updateUser = async (newUser) => {
+        verifyToken()
+
+        await axios.patch(AUTH_URL+`/user/${ user.id }/`, newUser ,{headers: {'Authorization': `Bearer ${user.token_access}`}})
+            .then((result) => {
+                setUser({...user, id: result.data.id, name: result.data.name, email: result.data.email})
+                alert('Tus datos se han actualizado con éxito.')
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+    }
+
+    useEffect(()=> {
+        getUserData();
+    }, [])
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget)
         const newUser = Object.fromEntries(formData)
+        const data = {}
+
+        if (newUser.name) data.name = newUser.name
+        if (newUser.password) data.password = newUser.password
+
+        updateUser(data)
         
-        //TODO: lógica para enviar peticion de update o patch al API de usuarios
-        
-        alert('Tus datos se han actualizado con éxito.')
-        setUser(newUser) //TODO: Cambiar por un fetch del usuario
+        getUserData()
         e.currentTarget.reset()
     }
 
