@@ -84,8 +84,6 @@ const Home = () => {
         joinRoom()
     }
 
-    //TODO: crear funcion para redireccionar a dibujos cuando se haga click, crear y unirse a dibujo
-
     return <div className="home">
         <Navbar />
 

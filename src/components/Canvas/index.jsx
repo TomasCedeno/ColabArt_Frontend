@@ -134,6 +134,8 @@ const Canvas = ({canvasRef, ctx, color, tool, thickness, elements, setElements, 
             return;
         }
 
+        setIsFetching(false);
+
         const { offsetX, offsetY } = e.nativeEvent;
               
         if (tool === "rectangle" || tool === "circle") {
