@@ -1,2 +1,2 @@
-export const AUTH_URL = "http://127.0.0.1:8000"
-export const DRAWINGS_URL = 'http://localhost:5000';
+export const AUTH_URL = "https://users-api.up.railway.app"
+export const DRAWINGS_URL = "https://colabart-backend.onrender.com";
